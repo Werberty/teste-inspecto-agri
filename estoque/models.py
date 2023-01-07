@@ -28,11 +28,20 @@ class Endereco(models.Model):
     cidade = models.CharField(max_length=165)
 
 
+class ProdutoDoFornecedor(models.Model):
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    preco_custo = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def __str__(self) -> str:
+        return f'{self.produto} - R$ {self.preco_custo}'
+
+
 class Fornecedor(Endereco):
     nome_fantasia = models.CharField(max_length=165)
     razao_social = models.CharField(max_length=165)
     cnpj = models.CharField(max_length=18)
-    produtos = models.ManyToManyField(Produto, related_name='fornecedores')
+    produtos = models.ManyToManyField(
+        ProdutoDoFornecedor, related_name='fornecedores')
 
     def __str__(self):
         return self.nome_fantasia

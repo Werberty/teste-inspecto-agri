@@ -1,9 +1,19 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import SimpleRouter
 
 from estoque import views
 
+app_name = 'estoque'
+
+produto_api_router = SimpleRouter()
+produto_api_router.register(
+    'produtos/api',
+    views.ProdutoAPIViewSet,
+    basename='produtos-api'
+)
+
+print(produto_api_router.urls)
+
 urlpatterns = [
-    path('api/', views.ProdutoAPILista.as_view(), name='produto_api_list'),
-    path('api/<int:pk>', views.ProdutoAPIDetalhe.as_view(),
-         name='produto_api_detalhe')
+    path('', include(produto_api_router.urls)),
 ]
