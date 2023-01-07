@@ -1,7 +1,7 @@
-from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-# from django.shortcuts import render
 
-
+@api_view()
 def api(request):
-    return JsonResponse({'data': 1})
+    return Response({'data': 1})
