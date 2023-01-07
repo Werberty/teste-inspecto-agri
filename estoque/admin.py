@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from .models import (Categoria, Fornecedor, Produto, ProdutoDoFornecedor,
-                     Telefone)
+from .models import Categoria, Fornecedor, FornecedorPreco, Produto, Telefone
 
 
 @admin.register(Produto)
@@ -24,6 +23,6 @@ class TelefoneAdmin(admin.ModelAdmin):
     ...
 
 
-@admin.register(ProdutoDoFornecedor)
-class ProdutoDoFornecedorAdmin(admin.ModelAdmin):
+@admin.register(FornecedorPreco)
+class FornecedorPrecoAdmin(admin.ModelAdmin):
     ...

@@ -1,9 +1,8 @@
-from rest_framework.generics import (ListCreateAPIView,
-                                     RetrieveUpdateDestroyAPIView)
 from rest_framework.viewsets import ModelViewSet
 
-from .models import Produto
-from .serializers import ProdutoSerializer
+from .models import Categoria, Fornecedor, Produto
+from .serializers import (CategoriaSerializer, FornecedorSerializer,
+                          ProdutoSerializer)
 
 
 class ProdutoAPIViewSet(ModelViewSet):
@@ -11,11 +10,11 @@ class ProdutoAPIViewSet(ModelViewSet):
     serializer_class = ProdutoSerializer
 
 
-# class ProdutoAPILista(ListCreateAPIView):
-#     queryset = Produto.objects.all()
-#     serializer_class = ProdutoSerializer
+class CategoriaAPIViewSet(ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
 
 
-# class ProdutoAPIDetalhe(RetrieveUpdateDestroyAPIView):
-#     queryset = Produto.objects.all()
-#     serializer_class = ProdutoSerializer
+class FornecedorAPIViewSet(ModelViewSet):
+    queryset = Fornecedor.objects.all()
+    serializer_class = FornecedorSerializer

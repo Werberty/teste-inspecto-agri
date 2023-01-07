@@ -12,8 +12,23 @@ produto_api_router.register(
     basename='produtos-api'
 )
 
-print(produto_api_router.urls)
+categoria_api_router = SimpleRouter()
+categoria_api_router.register(
+    'categorias/api',
+    views.CategoriaAPIViewSet,
+    basename='categorias-api'
+)
+
+fornecedores_api_router = SimpleRouter()
+fornecedores_api_router.register(
+    'fornecedores/api',
+    views.FornecedorAPIViewSet,
+    basename='fornecedores-api'
+)
+
 
 urlpatterns = [
     path('', include(produto_api_router.urls)),
+    path('', include(categoria_api_router.urls)),
+    path('', include(fornecedores_api_router.urls)),
 ]
