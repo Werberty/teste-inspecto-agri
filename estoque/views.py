@@ -1,15 +1,14 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Produto
 from .serializers import ProdutoSerializer
 
 
-@api_view(http_method_names=['get', 'post'])
-def produto_api_lista(request):
-    if request.method == 'GET':
+class ProdutoAPILista(APIView):
+    def get(self, request):
         produto = Produto.objects.all()
         serializer = ProdutoSerializer(
             instance=produto,
@@ -17,7 +16,7 @@ def produto_api_lista(request):
         )
         return Response(serializer.data)
 
-    elif request.method == 'POST':
+    def post(self, request):
         serializer = ProdutoSerializer(
             data=request.data
         )
@@ -29,13 +28,16 @@ def produto_api_lista(request):
         )
 
 
-@api_view(http_method_names=['get', 'patch', 'delete'])
-def produto_api_detalhe(request, pk):
-    produto = get_object_or_404(
-        Produto.objects.all(),
-        pk=pk
-    )
-    if request.method == 'GET':
+class ProdutoAPIDetalhe(APIView):
+    def get_produto(self, pk):
+        produto = get_object_or_404(
+            Produto.objects.all(),
+            pk=pk
+        )
+        return produto
+
+    def get(self, request, pk):
+        produto = self.get_produto(pk)
         serializer = ProdutoSerializer(
             instance=produto,
             many=False,
@@ -43,7 +45,8 @@ def produto_api_detalhe(request, pk):
         )
         return Response(serializer.data)
 
-    elif request.method == 'PATCH':
+    def patch(self, request, pk):
+        produto = self.get_produto(pk)
         serializer = ProdutoSerializer(
             instance=produto,
             data=request.data,
@@ -56,6 +59,8 @@ def produto_api_detalhe(request, pk):
         return Response(
             serializer.data
         )
-    elif request.method == 'DELETE':
+
+    def delete(self, request, pk):
+        produto = self.get_produto(pk)
         produto.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
