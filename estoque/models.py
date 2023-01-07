@@ -18,20 +18,12 @@ class Fornecedor(Endereco):
 
 
 class Telefone(models.Model):
-    numero = models.CharField(max_length=11)
+    numero = models.CharField(max_length=14)
     fornecedor = models.ForeignKey(
         Fornecedor, on_delete=models.CASCADE, related_name='telefones')
 
     def __str__(self):
         return self.numero
-
-
-class FornecedorPreco(models.Model):
-    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
-    preco_de_custo = models.DecimalField(max_digits=12, decimal_places=2)
-
-    def __str__(self) -> str:
-        return f'{self.fornecedor} - R$ {self.preco_de_custo}'
 
 
 class Categoria(models.Model):
@@ -46,10 +38,23 @@ class Categoria(models.Model):
 class Produto(models.Model):
     nome = models.CharField(max_length=200, unique=True)
     descricao = models.TextField(blank=True, null=True)
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
-    preco_dos_fornecedores = models.ManyToManyField(FornecedorPreco)
+    categoria = models.ForeignKey(
+        Categoria, on_delete=models.CASCADE)
+    # preco_dos_fornecedores = models.ManyToManyField(
+    #     FornecedorPreco, related_name='produto')
     data_de_criacao = models.DateField(auto_now_add=True)
     data_de_atualizacao = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.nome
+
+
+class FornecedorPreco(models.Model):
+    produto = models.ForeignKey(
+        Produto, on_delete=models.CASCADE,
+        related_name='preco_nos_fornecedores')
+    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
+    preco_de_custo = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def __str__(self) -> str:
+        return f'{self.fornecedor} - R$ {self.preco_de_custo}'

@@ -15,7 +15,7 @@ class FornecedorPrecoSerializer(serializers.ModelSerializer):
     class Meta:
         model = FornecedorPreco
         fields = [
-            'id', 'fornecedor', 'preco_de_custo',
+            'id', 'produto', 'fornecedor', 'preco_de_custo',
         ]
 
 
@@ -23,12 +23,13 @@ class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produto
         fields = [
-            'id', 'nome', 'descricao', 'categoria',
-            'data_de_criacao', 'data_de_atualizacao', 'preco_dos_fornecedores'
+            'id', 'nome', 'descricao', 'categoria', 'preco_nos_fornecedores',
+            'preco_nos_fornecedores_objects',
+            'data_de_criacao', 'data_de_atualizacao',
         ]
 
-    preco_dos_fornecedores = FornecedorPrecoSerializer(
-        many=True, read_only=True)
+    preco_nos_fornecedores_objects = FornecedorPrecoSerializer(
+        many=True, read_only=True, source='preco_nos_fornecedores')
 
 
 class FornecedorSerializer(serializers.ModelSerializer):
@@ -36,5 +37,9 @@ class FornecedorSerializer(serializers.ModelSerializer):
         model = Fornecedor
         fields = [
             'id', 'nome_fantasia', 'razao_social', 'cnpj',
+            'telefones', 'telefones_objects',
             'logradouro', 'numero', 'bairro', 'cidade'
         ]
+
+    telefones_objects = serializers.StringRelatedField(
+        many=True, read_only=True, source='telefones')
