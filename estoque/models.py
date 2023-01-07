@@ -1,5 +1,7 @@
 from django.db import models
 
+from .validators import valida_cnpj
+
 
 class Endereco(models.Model):
     logradouro = models.CharField(max_length=165)
@@ -11,7 +13,7 @@ class Endereco(models.Model):
 class Fornecedor(Endereco):
     nome_fantasia = models.CharField(max_length=165)
     razao_social = models.CharField(max_length=165)
-    cnpj = models.CharField(max_length=18)
+    cnpj = models.CharField(max_length=18, validators=[valida_cnpj,])
 
     def __str__(self):
         return self.nome_fantasia
@@ -40,8 +42,6 @@ class Produto(models.Model):
     descricao = models.TextField(blank=True, null=True)
     categoria = models.ForeignKey(
         Categoria, on_delete=models.CASCADE)
-    # preco_dos_fornecedores = models.ManyToManyField(
-    #     FornecedorPreco, related_name='produto')
     data_de_criacao = models.DateField(auto_now_add=True)
     data_de_atualizacao = models.DateField(auto_now=True)
 
