@@ -12,6 +12,8 @@ produto_api_router.register(
     basename='produtos-api'
 )
 
+print(produto_api_router.urls)
+
 categoria_api_router = SimpleRouter()
 categoria_api_router.register(
     'categorias/api',
@@ -28,7 +30,10 @@ fornecedores_api_router.register(
 
 
 urlpatterns = [
+    # API
     path('', include(produto_api_router.urls)),
     path('', include(categoria_api_router.urls)),
     path('', include(fornecedores_api_router.urls)),
+    # Site
+    path('produtos/', views.produtos_view, name='produtos_view')
 ]
