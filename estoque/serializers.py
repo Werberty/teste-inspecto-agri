@@ -7,9 +7,6 @@ from .models import Produto
 #     # data_de_criacao = serializers.DateTimeField(auto_now_add=True)
 #     # data_de_atualizacao = serializers.DateTimeField(auto_now=True)
 
-#     def __str__(self):
-#         return self.nome
-
 
 class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,7 +16,7 @@ class ProdutoSerializer(serializers.ModelSerializer):
             'data_de_criacao', 'data_de_atualizacao'
         ]
 
-    categoria = serializers.StringRelatedField()
+    # categoria = serializers.StringRelatedField()
 
 
 # class EnderecoSerializer(serializers.Serializer):
