@@ -106,11 +106,10 @@
     $.ajax({
         url: "{% url 'estoque:produtos-api-list' %}",
         type: 'GET',
-        async: true,
         success: function (resposta) {
             var linha = document.getElementById("tabela");
             resposta.forEach(element => {
-                conteudo = `<tr>
+                conteudo = `<tr id="produto-${element.id}">
                                 <td> ${element.id} </td>
                                 <td> ${element.nome} </td>
                                 <td> ${element.descricao} </td>
@@ -141,13 +140,6 @@
 
     const url = "{% url 'estoque:produtos-api-list' %}"
 
-    console.log(form)
-    console.log(nome)
-    console.log(descricao)
-    console.log(categoria)
-    console.log(form_fornecedor_preco)
-    console.log(csrf)
-
     form.addEventListener('submit', e => {
         e.preventDefault()
 
@@ -162,9 +154,9 @@
             url: url,
             data: fd,
             success: function (resposta) {
-                console.log(resposta)
+                // console.log(resposta)
                 var linha = document.getElementById("tabela");
-                conteudo = `<tr>
+                conteudo = `<tr id="produto-${resposta.id}">
                                 <td> ${resposta.id} </td>
                                 <td> ${resposta.nome} </td>
                                 <td> ${resposta.descricao} </td>
@@ -189,6 +181,49 @@
             processData: false,
         })
     })
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    function deleteUser(id) {
+        const url = '{% url "estoque:produtos-api-detail" 0 %}'.replace('0', id);
+
+        var action = confirm("Are you sure you want to delete this user?");
+        if (action != false) {
+            $.ajax({
+                type: 'DELETE',
+                url: url,
+                headers: { 'X-CSRFToken': csrftoken },
+                mode: 'same-origin',
+                success: function (resposta) {
+                    console.log(resposta)
+                    $("#userTable #produto-" + id).remove();
+                },
+                error: function (error) {
+                    const respostaErrors = error.responseJSON
+                    console.log(error)
+                    console.log(respostaErrors)
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            })
+        }
+    }
 
 
 </script>

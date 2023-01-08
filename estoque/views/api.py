@@ -9,6 +9,12 @@ class ProdutoAPIViewSet(ModelViewSet):
     queryset = Produto.objects.all()
     serializer_class = ProdutoSerializer
 
+    # def destroy(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     print(instance)
+
+    #     return super().destroy(request, *args, **kwargs)
+
 
 class CategoriaAPIViewSet(ModelViewSet):
     queryset = Categoria.objects.all()
