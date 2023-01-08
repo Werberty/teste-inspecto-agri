@@ -7,8 +7,8 @@
     <div class="row justify-content-md-center">
         <div class="col-md-auto">
             <h3>Adicione Produtos</h3>
-            <form id="addUser" action="">
-                <div class="form-group">
+            <form id="formProdutudo" action="">
+                {% comment %} <div class="form-group">
                     <input class="form-control" type="text" name="name" placeholder="Name" required>
                 </div>
                 <div class="form-group">
@@ -16,8 +16,20 @@
                 </div>
                 <div class="form-group">
                     <input class="form-control" type="number" name="age" min="10" max="100" placeholder="Age" required>
+                </div> {% endcomment %}
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                {{ form_fornecedor_preco.management_form }}
+
+                <div id="formFornecedorPreco">
+                    {% for fp in form_fornecedor_preco %}
+                    <hr>
+                    {{ fp }}
+                    {% endfor %}
                 </div>
-                <button class="btn btn-primary form-control" type="submit">SUBMIT</button>
+
+                <button class="btn btn-primary form-control mt-2" type="submit">SUBMIT</button>
             </form>
         </div>
     </div>
@@ -93,11 +105,10 @@
     // Lista os Produtos
     $.ajax({
         url: "{% url 'estoque:produtos-api-list' %}",
-        method: 'get',
+        type: 'GET',
         async: true,
         success: function (resposta) {
             var linha = document.getElementById("tabela");
-            console.log(resposta)
             resposta.forEach(element => {
                 conteudo = `<tr>
                                 <td> ${element.id} </td>
@@ -116,6 +127,69 @@
             });
         },
     })
+
+    const table = document.getElementById("tabela");
+    const form = document.getElementById('formProdutudo');
+
+    const nome = document.getElementById('id_nome');
+    const descricao = document.getElementById('id_descricao');
+    const categoria = document.getElementById('id_categoria');
+
+    const csrf = document.getElementsByName('csrfmiddlewaretoken')
+
+    const form_fornecedor_preco = document.getElementById('formFornecedorPreco')
+
+    const url = "{% url 'estoque:produtos-api-list' %}"
+
+    console.log(form)
+    console.log(nome)
+    console.log(descricao)
+    console.log(categoria)
+    console.log(form_fornecedor_preco)
+    console.log(csrf)
+
+    form.addEventListener('submit', e => {
+        e.preventDefault()
+
+        const fd = new FormData()
+        fd.append('csrfmiddlewaretoken', csrf[0].value)
+        fd.append('nome', nome.value)
+        fd.append('descricao', descricao.value)
+        fd.append('categoria', categoria.value)
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: fd,
+            success: function (resposta) {
+                console.log(resposta)
+                var linha = document.getElementById("tabela");
+                conteudo = `<tr>
+                                <td> ${resposta.id} </td>
+                                <td> ${resposta.nome} </td>
+                                <td> ${resposta.descricao} </td>
+                                <td class="row">
+                                    <div class="col">
+                                        <button class="btn btn-success form-control" onClick="editUser(${resposta.id})" data-toggle="modal" data-target="#myModal">EDIT</button>
+                                    </div>
+                                    <div class="col">
+                                        <button class="btn btn-danger form-control" onClick="deleteUser(${resposta.id})">DELETE</button> 
+                                    </div>
+                                </td>
+                            </tr>`
+                linha.innerHTML += conteudo
+            },
+            error: function (error) {
+                const respostaErrors = error.responseJSON
+                console.log(error)
+                console.log(respostaErrors)
+            },
+            cache: false,
+            contentType: false,
+            processData: false,
+        })
+    })
+
 
 </script>
 {% endblock script %}

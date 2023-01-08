@@ -12,8 +12,6 @@ produto_api_router.register(
     basename='produtos-api'
 )
 
-print(produto_api_router.urls)
-
 categoria_api_router = SimpleRouter()
 categoria_api_router.register(
     'categorias/api',
