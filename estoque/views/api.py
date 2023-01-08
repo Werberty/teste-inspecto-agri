@@ -6,7 +6,7 @@ from ..serializers import (CategoriaSerializer, FornecedorSerializer,
 
 
 class ProdutoAPIViewSet(ModelViewSet):
-    queryset = Produto.objects.all().order_by('-id')
+    queryset = Produto.objects.all()
     serializer_class = ProdutoSerializer
 
 

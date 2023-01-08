@@ -1,0 +1,267 @@
+{% extends 'global/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<h1 class="mt-4 text-center">Categorias</h1>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="row justify-content-center">
+            <button type="button" class="btn btn-primary col-5 align-self-center" data-bs-toggle="modal"
+                data-bs-target="#newModal">
+                Novo produto
+            </button>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col">
+            <table id="userTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nome</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal Criar-->
+<div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCategoria" action="">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+
+                    <button class="btn btn-primary form-control mt-2" type="submit">Cadastrar</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Editar-->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Editar</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateForm" action="">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+
+                    <input class="form-control" id="form-id" type="hidden" name="formId" />
+
+
+                    <button class="btn btn-primary form-control mt-2" type="submit">Salvar</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+    function appendToTable(element) {
+        var linha = document.getElementById("tabela");
+        conteudo = `<tr id="categoria-${element.id}">
+                            <td class="categoriaId userData" name="id">${element.id}</td>
+                            <td class="categoriaNome userData" name="nome">${element.nome}</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editModal" onClick="editUser(${element.id})">
+                                        Editar
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger" onClick="deleteUser(${element.id})">DELETE</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`
+        linha.innerHTML += conteudo
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        };
+        return cookieValue;
+    };
+    const csrftoken = getCookie('csrftoken');
+
+    // Lista as Categorias
+    (function listaCategorias() {
+        $.ajax({
+            url: "{% url 'estoque:categorias-api-list' %}",
+            type: 'GET',
+            async: true,
+            success: function (resposta) {
+                resposta.forEach(element => {
+                    appendToTable(element);
+                })
+            },
+        })
+    })();
+
+
+    //  Criar Categoria
+    (function criaCategoria() {
+        const table = document.getElementById("tabela");
+        const form = document.getElementById('formCategoria');
+
+        const nome = document.getElementById('id_nome');
+
+        const csrf = document.getElementsByName('csrfmiddlewaretoken')
+
+        const url = "{% url 'estoque:categorias-api-list' %}"
+
+        form.addEventListener('submit', e => {
+            e.preventDefault()
+
+            const fd = new FormData()
+            fd.append('csrfmiddlewaretoken', csrf[0].value)
+            fd.append('nome', nome.value)
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: fd,
+                async: true,
+                success: function (resposta) {
+                    appendToTable(resposta);
+                },
+                error: function (error) {
+                    const respostaErrors = error.responseJSON
+                    console.log(error)
+                    console.log(respostaErrors)
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            })
+        })
+    })();
+
+
+
+    // Deletar Categoria
+    function deleteUser(id) {
+        const url = '{% url "estoque:categorias-api-detail" 0 %}'.replace('0', id);
+
+        var action = confirm("Are you sure you want to delete this user?");
+        if (action != false) {
+            $.ajax({
+                type: 'DELETE',
+                url: url,
+                headers: { 'X-CSRFToken': csrftoken },
+                mode: 'same-origin',
+                success: function (resposta) {
+                    console.log(resposta)
+                    $("#userTable #categoria-" + id).remove();
+                },
+                error: function (error) {
+                    const respostaErrors = error.responseJSON
+                    console.log(error)
+                    console.log(respostaErrors)
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            })
+        }
+    }
+
+
+    // Editando produto
+    (function editaProduto() {
+        const form_edit = document.getElementById('updateForm')
+
+        form_edit.addEventListener('submit', e => {
+            e.preventDefault()
+
+            var idInput = $('input[name="formId"]').val().trim();
+            var nomeInput = $('form#updateForm #id_nome').val().trim();
+
+            var url = '{% url "estoque:categorias-api-detail" 0 %}'.replace('0', idInput);
+
+            const fd = new FormData()
+            fd.append('nome', nomeInput)
+
+            if (nomeInput) {
+                // Create Ajax Call
+                $.ajax({
+                    type: 'PATCH',
+                    url: url,
+                    headers: { 'X-CSRFToken': csrftoken },
+                    data: fd,
+                    async: true,
+                    success: function (resposta) {
+                        updateToTabel(resposta)
+                    },
+                    error: function (error) {
+                        const respostaErrors = error.responseJSON
+                        console.log(error)
+                        console.log(respostaErrors)
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                })
+            } else {
+                alert("All fields must have a valid value.");
+            }
+        })
+    })();
+
+    function updateToTabel(resposta) {
+        $("#userTable #categoria-" + resposta.id).children(".userData").each(function () {
+            var attr = $(this).attr("name");
+            if (attr == "nome") {
+                $(this).text(resposta.nome);
+            }
+        });
+    }
+
+    function editUser(id) {
+        if (id) {
+            tr_id = "#categoria-" + id;
+            const nome = $(tr_id).find(".categoriaNome").text();
+            $('form#updateForm #form-id').val(id);
+            $('form#updateForm #id_nome').val(nome);
+        }
+    }
+
+</script>
+{% endblock script %}

@@ -33,5 +33,6 @@ urlpatterns = [
     path('', include(categoria_api_router.urls)),
     path('', include(fornecedores_api_router.urls)),
     # Site
-    path('produtos/', views.produtos_view, name='produtos_view')
+    path('produtos/', views.produtos_view, name='produtos_view'),
+    path('categorias/', views.categoria_view, name='categorias_view'),
 ]

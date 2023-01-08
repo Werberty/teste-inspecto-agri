@@ -1,6 +1,14 @@
 from django import forms
 
-from .models import FornecedorPreco, Produto
+from .models import Categoria, FornecedorPreco, Produto
+
+
+class CategoriaForm(forms.ModelForm):
+    class Meta:
+        model = Categoria
+        fields = [
+            'nome'
+        ]
 
 
 class ProdutoForm(forms.ModelForm):

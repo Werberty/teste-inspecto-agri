@@ -1,7 +1,7 @@
 from django.forms.models import inlineformset_factory
 from django.shortcuts import render
 
-from estoque.forms import FornecedorPrecoForm, ProdutoForm
+from estoque.forms import CategoriaForm, FornecedorPrecoForm, ProdutoForm
 from estoque.models import FornecedorPreco, Produto
 
 
@@ -15,7 +15,14 @@ def produtos_view(request):
         'form': form,
         'form_fornecedor_preco': form_fornecedor_preco
     }
-    return render(request, 'estoque/produtos.html', context)
+    return render(request, 'estoque/pages/produtos.html', context)
+
+
+def categoria_view(request):
+    form = CategoriaForm()
+    return render(request, 'estoque/pages/categorias.html', context={
+        'form': form
+    })
 
 
 def inserir(request):
@@ -29,4 +36,4 @@ def inserir(request):
             'form': form,
             'form_fornecedor_preco': form_fornecedor_preco
         }
-        return render(request, 'estoque/produtos.html', context)
+        return render(request, 'estoque/pages/produtos.html', context)

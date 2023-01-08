@@ -114,7 +114,7 @@
                             <td>
                                 <div class="row">
                                     <div class="col">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal" onClick="editUser(${element.id})">
+                                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editModal" onClick="editUser(${element.id})">
                                         Editar
                                         </button>
                                     </div>
@@ -145,7 +145,7 @@
     const csrftoken = getCookie('csrftoken');
 
     // Lista os Produtos
-    (async function listaProdutos() {
+    (function listaProdutos() {
         $.ajax({
             url: "{% url 'estoque:produtos-api-list' %}",
             type: 'GET',
@@ -160,7 +160,7 @@
 
 
     //  Criar Produto
-    (async function criaProduto() {
+    (function criaProduto() {
         const table = document.getElementById("tabela");
         const form = document.getElementById('formProduto');
 
@@ -234,47 +234,49 @@
 
 
     // Editando produto
-    const form_edit = document.getElementById('updateForm')
+    (function editaProduto() {
+        const form_edit = document.getElementById('updateForm')
 
-    form_edit.addEventListener('submit', e => {
-        e.preventDefault()
+        form_edit.addEventListener('submit', e => {
+            e.preventDefault()
 
-        var idInput = $('input[name="formId"]').val().trim();
-        var nomeInput = $('form#updateForm #id_nome').val().trim();
-        var descricaoInput = $('form#updateForm #id_descricao').val().trim();
-        var categoriaInput = $('form#updateForm #id_categoria').val().trim();
+            var idInput = $('input[name="formId"]').val().trim();
+            var nomeInput = $('form#updateForm #id_nome').val().trim();
+            var descricaoInput = $('form#updateForm #id_descricao').val().trim();
+            var categoriaInput = $('form#updateForm #id_categoria').val().trim();
 
-        var url = '{% url "estoque:produtos-api-detail" 0 %}'.replace('0', idInput);
+            var url = '{% url "estoque:produtos-api-detail" 0 %}'.replace('0', idInput);
 
-        const fd = new FormData()
-        fd.append('nome', nomeInput)
-        fd.append('descricao', descricaoInput)
-        fd.append('categoria', categoriaInput)
+            const fd = new FormData()
+            fd.append('nome', nomeInput)
+            fd.append('descricao', descricaoInput)
+            fd.append('categoria', categoriaInput)
 
-        if (nomeInput && categoriaInput) {
-            // Create Ajax Call
-            $.ajax({
-                type: 'PATCH',
-                url: url,
-                headers: { 'X-CSRFToken': csrftoken },
-                data: fd,
-                async: true,
-                success: function (resposta) {
-                    updateToTabel(resposta)
-                },
-                error: function (error) {
-                    const respostaErrors = error.responseJSON
-                    console.log(error)
-                    console.log(respostaErrors)
-                },
-                cache: false,
-                contentType: false,
-                processData: false,
-            })
-        } else {
-            alert("All fields must have a valid value.");
-        }
-    })
+            if (nomeInput && categoriaInput) {
+                // Create Ajax Call
+                $.ajax({
+                    type: 'PATCH',
+                    url: url,
+                    headers: { 'X-CSRFToken': csrftoken },
+                    data: fd,
+                    async: true,
+                    success: function (resposta) {
+                        updateToTabel(resposta)
+                    },
+                    error: function (error) {
+                        const respostaErrors = error.responseJSON
+                        console.log(error)
+                        console.log(respostaErrors)
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                })
+            } else {
+                alert("All fields must have a valid value.");
+            }
+        })
+    })();
 
     function updateToTabel(resposta) {
         $("#userTable #produto-" + resposta.id).children(".userData").each(function () {
