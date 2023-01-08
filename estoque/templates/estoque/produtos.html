@@ -41,51 +41,42 @@
                         <th>Id</th>
                         <th>Nome</th>
                         <th>Descrição</th>
+                        <th>Categoria</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
-                {% comment %} {% if users %}
-                {% for user in users %}
-                <tr id="user-{{user.id}}">
-                    <td class="userName userData" name="name">{{user.name}}</td>
-                    <td class="userAddress userData" name="address">{{user.address}}</td>
-                    <td class="userAge userData" name="age">{{user.age}}</td>
-                    <td align="center">
-                        <button class="btn btn-success form-control" onClick="editUser({{user.id}})" data-toggle="modal"
-                            data-target="#myModal">EDIT</button>
-                    </td>
-                    <td align="center">
-                        <button class="btn btn-danger form-control" onClick="deleteUser({{user.id}})">DELETE</button>
-                    </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                No Users
-                {% endif %} {% endcomment %}
                 <tbody id="tabela">
+
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">×</span></button>
-                <h4 class="modal-title" id="myModalLabel">Update User</h4>
+                <h4 class="modal-title" id="myModalLabel">Atualizar Produto</h4>
             </div>
             <form id="updateUser" action="">
                 <div class="modal-body">
+                    {% csrf_token %}
+
                     <input class="form-control" id="form-id" type="hidden" name="formId" />
-                    <label for="name">Name</label>
-                    <input class="form-control" id="form-name" type="text" name="formName" />
-                    <label for="address">Address</label>
-                    <input class="form-control" id="form-address" type="text" name="formAddress" />
-                    <label for="age">Age</label>
-                    <input class="form-control" id="form-age" type="number" name="formAge" min=10 max=100 />
+
+                    {{ form.as_p }}
+
+                    {{ form_fornecedor_preco.management_form }}
+
+                    <div id="formFornecedorPreco">
+                        {% for fp in form_fornecedor_preco %}
+                        <hr>
+                        {{ fp }}
+                        {% endfor %}
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save changes</button>
@@ -95,38 +86,82 @@
             </form>
         </div>
     </div>
+</div> -->
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateUser" action="">
+                    <div class="modal-body">
+                        {% csrf_token %}
+
+                        <input class="form-control" id="form-id" type="hidden" name="formId" />
+
+                        {{ form.as_p }}
+
+                        {{ form_fornecedor_preco.management_form }}
+
+                        <div id="formFornecedorPreco">
+                            {% for fp in form_fornecedor_preco %}
+                            <hr>
+                            {{ fp }}
+                            {% endfor %}
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock content %}
 
 {% block script %}
 <script>
-
+    function appendToTable(element) {
+        // onClick="editUser(${element.id})" 
+        var linha = document.getElementById("tabela");
+        conteudo = `<tr id="produto-${element.id}">
+                            <td class="produtoId">${element.id}</td>
+                            <td class="produtoNome">${element.nome}</td>
+                            <td class="produtoDescricao">${element.descricao}</td>
+                            <td class="produtoCategoriaId" hidden>${element.categoria}</td>
+                            <td class="produtoCategoria" >${element.categoria_name}</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal" onClick="editUser(${element.id})">
+                                        Editar
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger" onClick="deleteUser(${element.id})">DELETE</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`
+        linha.innerHTML += conteudo
+    }
     // Lista os Produtos
     $.ajax({
         url: "{% url 'estoque:produtos-api-list' %}",
         type: 'GET',
         success: function (resposta) {
-            var linha = document.getElementById("tabela");
             resposta.forEach(element => {
-                conteudo = `<tr id="produto-${element.id}">
-                                <td> ${element.id} </td>
-                                <td> ${element.nome} </td>
-                                <td> ${element.descricao} </td>
-                                <td class="row">
-                                    <div class="col">
-                                        <button class="btn btn-success form-control" onClick="editUser(${element.id})" data-toggle="modal" data-target="#myModal">EDIT</button>
-                                    </div>
-                                    <div class="col">
-                                        <button class="btn btn-danger form-control" onClick="deleteUser(${element.id})">DELETE</button> 
-                                    </div>
-                                </td>
-                            </tr>`
-                linha.innerHTML += conteudo
-            });
+                appendToTable(element);
+            })
         },
     })
 
+    //  Criar Produto
     const table = document.getElementById("tabela");
     const form = document.getElementById('formProdutudo');
 
@@ -154,22 +189,7 @@
             url: url,
             data: fd,
             success: function (resposta) {
-                // console.log(resposta)
-                var linha = document.getElementById("tabela");
-                conteudo = `<tr id="produto-${resposta.id}">
-                                <td> ${resposta.id} </td>
-                                <td> ${resposta.nome} </td>
-                                <td> ${resposta.descricao} </td>
-                                <td class="row">
-                                    <div class="col">
-                                        <button class="btn btn-success form-control" onClick="editUser(${resposta.id})" data-toggle="modal" data-target="#myModal">EDIT</button>
-                                    </div>
-                                    <div class="col">
-                                        <button class="btn btn-danger form-control" onClick="deleteUser(${resposta.id})">DELETE</button> 
-                                    </div>
-                                </td>
-                            </tr>`
-                linha.innerHTML += conteudo
+                appendToTable(resposta);
             },
             error: function (error) {
                 const respostaErrors = error.responseJSON
@@ -194,11 +214,12 @@
                     break;
                 }
             }
-        }
+        };
         return cookieValue;
-    }
+    };
     const csrftoken = getCookie('csrftoken');
 
+    // Deletar Produto
     function deleteUser(id) {
         const url = '{% url "estoque:produtos-api-detail" 0 %}'.replace('0', id);
 
@@ -223,8 +244,48 @@
                 processData: false,
             })
         }
-    }
+    };
 
+    // Editar produto
+
+    $("form#updateUser").submit(function () {
+        const id_form = document.getElementById('form-id');
+        const nome = document.getElementById('id_nome');
+        const descricao = document.getElementById('id_descricao');
+        const categoria = document.getElementById('id_categoria');
+
+        const csrf = document.getElementsByName('csrfmiddlewaretoken')
+
+        const url = '{% url "estoque:produtos-api-detail" 0 %}'.replace('0', id_form);
+
+        form.addEventListener('submit', e => {
+            e.preventDefault()
+
+            const fd = new FormData()
+            fd.append('csrfmiddlewaretoken', csrf[0].value)
+            fd.append('nome', nome.value)
+            fd.append('descricao', descricao.value)
+            fd.append('categoria', categoria.value)
+
+
+        });
+        // $('form#updateUser').trigger("reset");
+        // $('#myModal').modal('hide');
+    });
+
+    function editUser(id) {
+        if (id) {
+            tr_id = "#produto-" + id;
+            const nome = $(tr_id).find(".produtoNome").text();
+            const descricao = $(tr_id).find(".produtoDescricao").text();
+            const categoria = $(tr_id).find(".produtoCategoriaId").text();
+            console.log(nome, descricao, categoria)
+            $('#form-id').val(id);
+            $('#id_nome').val(nome);
+            $('#id_descricao').val(descricao);
+            $('#id_categoria').val(categoria);
+        }
+    }
 
 </script>
 {% endblock script %}

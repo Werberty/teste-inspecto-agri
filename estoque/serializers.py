@@ -23,10 +23,14 @@ class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produto
         fields = [
-            'id', 'nome', 'descricao', 'categoria', 'preco_nos_fornecedores',
+            'id', 'nome', 'descricao',
+            'categoria', 'categoria_name',
+            'preco_nos_fornecedores',
             'preco_nos_fornecedores_objects',
             'data_de_criacao', 'data_de_atualizacao',
         ]
+
+    categoria_name = serializers.StringRelatedField(source='categoria')
 
     preco_nos_fornecedores_objects = FornecedorPrecoSerializer(
         many=True, read_only=True, source='preco_nos_fornecedores')
