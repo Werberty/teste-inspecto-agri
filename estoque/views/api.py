@@ -6,14 +6,8 @@ from ..serializers import (CategoriaSerializer, FornecedorSerializer,
 
 
 class ProdutoAPIViewSet(ModelViewSet):
-    queryset = Produto.objects.all()
+    queryset = Produto.objects.all().order_by('-id')
     serializer_class = ProdutoSerializer
-
-    # def destroy(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     print(instance)
-
-    #     return super().destroy(request, *args, **kwargs)
 
 
 class CategoriaAPIViewSet(ModelViewSet):

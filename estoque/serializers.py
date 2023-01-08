@@ -30,7 +30,8 @@ class ProdutoSerializer(serializers.ModelSerializer):
             'data_de_criacao', 'data_de_atualizacao',
         ]
 
-    categoria_name = serializers.StringRelatedField(source='categoria')
+    categoria_name = serializers.StringRelatedField(
+        source='categoria', read_only=True)
 
     preco_nos_fornecedores_objects = FornecedorPrecoSerializer(
         many=True, read_only=True, source='preco_nos_fornecedores')

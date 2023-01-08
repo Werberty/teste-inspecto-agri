@@ -1,36 +1,17 @@
 {% extends 'global/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
+
 
 {% block content %}
 <h1 class="mt-4 text-center">Produtos</h1>
 <div class="container">
     <div class="row justify-content-md-center">
-        <div class="col-md-auto">
-            <h3>Adicione Produtos</h3>
-            <form id="formProdutudo" action="">
-                {% comment %} <div class="form-group">
-                    <input class="form-control" type="text" name="name" placeholder="Name" required>
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="text" name="address" placeholder="Address" required>
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="number" name="age" min="10" max="100" placeholder="Age" required>
-                </div> {% endcomment %}
-                {% csrf_token %}
-                {{ form.as_p }}
-
-                {{ form_fornecedor_preco.management_form }}
-
-                <div id="formFornecedorPreco">
-                    {% for fp in form_fornecedor_preco %}
-                    <hr>
-                    {{ fp }}
-                    {% endfor %}
-                </div>
-
-                <button class="btn btn-primary form-control mt-2" type="submit">SUBMIT</button>
-            </form>
+        <div class="row justify-content-center">
+            <button type="button" class="btn btn-primary col-5 align-self-center" data-bs-toggle="modal"
+                data-bs-target="#newModal">
+                Novo produto
+            </button>
         </div>
     </div>
     <div class="row mt-5">
@@ -52,71 +33,66 @@
         </div>
     </div>
 </div>
-<!-- Modal -->
-<!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
+<!-- Modal Criar-->
+<div class="modal fade" id="newModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-                <h4 class="modal-title" id="myModalLabel">Atualizar Produto</h4>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastrar</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="updateUser" action="">
-                <div class="modal-body">
+            <div class="modal-body">
+                <form id="formProduto" action="">
                     {% csrf_token %}
-
-                    <input class="form-control" id="form-id" type="hidden" name="formId" />
-
-                    {{ form.as_p }}
+                    {{ form|crispy }}
 
                     {{ form_fornecedor_preco.management_form }}
 
                     <div id="formFornecedorPreco">
                         {% for fp in form_fornecedor_preco %}
                         <hr>
-                        {{ fp }}
+                        {{ fp|crispy }}
                         {% endfor %}
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
 
-            </form>
+                    <button class="btn btn-primary form-control mt-2" type="submit">SUBMIT</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
         </div>
     </div>
-</div> -->
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+</div>
+<!-- Modal Editar-->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Editar</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="updateUser" action="">
-                    <div class="modal-body">
-                        {% csrf_token %}
+                <form id="updateForm" action="">
+                    {% csrf_token %}
+                    {{ form|crispy }}
 
-                        <input class="form-control" id="form-id" type="hidden" name="formId" />
+                    <input class="form-control" id="form-id" type="hidden" name="formId" />
 
-                        {{ form.as_p }}
+                    {{ form_fornecedor_preco.management_form }}
 
-                        {{ form_fornecedor_preco.management_form }}
-
-                        <div id="formFornecedorPreco">
-                            {% for fp in form_fornecedor_preco %}
-                            <hr>
-                            {{ fp }}
-                            {% endfor %}
-                        </div>
+                    <div id="formFornecedorPreco">
+                        {% for fp in form_fornecedor_preco %}
+                        <hr>
+                        {{ fp|crispy }}
+                        {% endfor %}
                     </div>
+
+                    <button class="btn btn-primary form-control mt-2" type="submit">Salvar</button>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
@@ -130,15 +106,15 @@
         // onClick="editUser(${element.id})" 
         var linha = document.getElementById("tabela");
         conteudo = `<tr id="produto-${element.id}">
-                            <td class="produtoId">${element.id}</td>
-                            <td class="produtoNome">${element.nome}</td>
-                            <td class="produtoDescricao">${element.descricao}</td>
-                            <td class="produtoCategoriaId" hidden>${element.categoria}</td>
-                            <td class="produtoCategoria" >${element.categoria_name}</td>
+                            <td class="produtoId userData" name="id">${element.id}</td>
+                            <td class="produtoNome userData" name="nome">${element.nome}</td>
+                            <td class="produtoDescricao userData"  name="descricao">${element.descricao}</td>
+                            <td class="produtoCategoriaId userData"  name="categoria" hidden>${element.categoria}</td>
+                            <td class="produtoCategoria userData"  name="categoria_name">${element.categoria_name}</td>
                             <td>
                                 <div class="row">
                                     <div class="col">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal" onClick="editUser(${element.id})">
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal" onClick="editUser(${element.id})">
                                         Editar
                                         </button>
                                     </div>
@@ -150,57 +126,6 @@
                         </tr>`
         linha.innerHTML += conteudo
     }
-    // Lista os Produtos
-    $.ajax({
-        url: "{% url 'estoque:produtos-api-list' %}",
-        type: 'GET',
-        success: function (resposta) {
-            resposta.forEach(element => {
-                appendToTable(element);
-            })
-        },
-    })
-
-    //  Criar Produto
-    const table = document.getElementById("tabela");
-    const form = document.getElementById('formProdutudo');
-
-    const nome = document.getElementById('id_nome');
-    const descricao = document.getElementById('id_descricao');
-    const categoria = document.getElementById('id_categoria');
-
-    const csrf = document.getElementsByName('csrfmiddlewaretoken')
-
-    const form_fornecedor_preco = document.getElementById('formFornecedorPreco')
-
-    const url = "{% url 'estoque:produtos-api-list' %}"
-
-    form.addEventListener('submit', e => {
-        e.preventDefault()
-
-        const fd = new FormData()
-        fd.append('csrfmiddlewaretoken', csrf[0].value)
-        fd.append('nome', nome.value)
-        fd.append('descricao', descricao.value)
-        fd.append('categoria', categoria.value)
-
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: fd,
-            success: function (resposta) {
-                appendToTable(resposta);
-            },
-            error: function (error) {
-                const respostaErrors = error.responseJSON
-                console.log(error)
-                console.log(respostaErrors)
-            },
-            cache: false,
-            contentType: false,
-            processData: false,
-        })
-    })
 
     function getCookie(name) {
         let cookieValue = null;
@@ -218,6 +143,67 @@
         return cookieValue;
     };
     const csrftoken = getCookie('csrftoken');
+
+    // Lista os Produtos
+    (async function listaProdutos() {
+        $.ajax({
+            url: "{% url 'estoque:produtos-api-list' %}",
+            type: 'GET',
+            async: true,
+            success: function (resposta) {
+                resposta.forEach(element => {
+                    appendToTable(element);
+                })
+            },
+        })
+    })();
+
+
+    //  Criar Produto
+    (async function criaProduto() {
+        const table = document.getElementById("tabela");
+        const form = document.getElementById('formProduto');
+
+        const nome = document.getElementById('id_nome');
+        const descricao = document.getElementById('id_descricao');
+        const categoria = document.getElementById('id_categoria');
+
+        const csrf = document.getElementsByName('csrfmiddlewaretoken')
+
+        const form_fornecedor_preco = document.getElementById('formFornecedorPreco')
+
+        const url = "{% url 'estoque:produtos-api-list' %}"
+
+        form.addEventListener('submit', e => {
+            e.preventDefault()
+
+            const fd = new FormData()
+            fd.append('csrfmiddlewaretoken', csrf[0].value)
+            fd.append('nome', nome.value)
+            fd.append('descricao', descricao.value)
+            fd.append('categoria', categoria.value)
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: fd,
+                async: true,
+                success: function (resposta) {
+                    appendToTable(resposta);
+                },
+                error: function (error) {
+                    const respostaErrors = error.responseJSON
+                    console.log(error)
+                    console.log(respostaErrors)
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            })
+        })
+    })();
+
+
 
     // Deletar Produto
     function deleteUser(id) {
@@ -244,34 +230,66 @@
                 processData: false,
             })
         }
-    };
-
-    // Editar produto
-
-    $("form#updateUser").submit(function () {
-        const id_form = document.getElementById('form-id');
-        const nome = document.getElementById('id_nome');
-        const descricao = document.getElementById('id_descricao');
-        const categoria = document.getElementById('id_categoria');
-
-        const csrf = document.getElementsByName('csrfmiddlewaretoken')
-
-        const url = '{% url "estoque:produtos-api-detail" 0 %}'.replace('0', id_form);
-
-        form.addEventListener('submit', e => {
-            e.preventDefault()
-
-            const fd = new FormData()
-            fd.append('csrfmiddlewaretoken', csrf[0].value)
-            fd.append('nome', nome.value)
-            fd.append('descricao', descricao.value)
-            fd.append('categoria', categoria.value)
+    }
 
 
+    // Editando produto
+    const form_edit = document.getElementById('updateForm')
+
+    form_edit.addEventListener('submit', e => {
+        e.preventDefault()
+
+        var idInput = $('input[name="formId"]').val().trim();
+        var nomeInput = $('form#updateForm #id_nome').val().trim();
+        var descricaoInput = $('form#updateForm #id_descricao').val().trim();
+        var categoriaInput = $('form#updateForm #id_categoria').val().trim();
+
+        var url = '{% url "estoque:produtos-api-detail" 0 %}'.replace('0', idInput);
+
+        const fd = new FormData()
+        fd.append('nome', nomeInput)
+        fd.append('descricao', descricaoInput)
+        fd.append('categoria', categoriaInput)
+
+        if (nomeInput && categoriaInput) {
+            // Create Ajax Call
+            $.ajax({
+                type: 'PATCH',
+                url: url,
+                headers: { 'X-CSRFToken': csrftoken },
+                data: fd,
+                async: true,
+                success: function (resposta) {
+                    updateToTabel(resposta)
+                },
+                error: function (error) {
+                    const respostaErrors = error.responseJSON
+                    console.log(error)
+                    console.log(respostaErrors)
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            })
+        } else {
+            alert("All fields must have a valid value.");
+        }
+    })
+
+    function updateToTabel(resposta) {
+        $("#userTable #produto-" + resposta.id).children(".userData").each(function () {
+            var attr = $(this).attr("name");
+            if (attr == "nome") {
+                $(this).text(resposta.nome);
+            } else if (attr == "descricao") {
+                $(this).text(resposta.descricao);
+            } else if (attr == "categoria") {
+                $(this).text(resposta.categoria);
+            } else if (attr == "categoria_name") {
+                $(this).text(resposta.categoria_name);
+            }
         });
-        // $('form#updateUser').trigger("reset");
-        // $('#myModal').modal('hide');
-    });
+    }
 
     function editUser(id) {
         if (id) {
@@ -279,11 +297,10 @@
             const nome = $(tr_id).find(".produtoNome").text();
             const descricao = $(tr_id).find(".produtoDescricao").text();
             const categoria = $(tr_id).find(".produtoCategoriaId").text();
-            console.log(nome, descricao, categoria)
-            $('#form-id').val(id);
-            $('#id_nome').val(nome);
-            $('#id_descricao').val(descricao);
-            $('#id_categoria').val(categoria);
+            $('form#updateForm #form-id').val(id);
+            $('form#updateForm #id_nome').val(nome);
+            $('form#updateForm #id_descricao').val(descricao);
+            $('form#updateForm #id_categoria').val(categoria);
         }
     }
 
