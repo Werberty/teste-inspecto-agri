@@ -42,6 +42,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div id="menssagem-alerta" class="alert alert-danger" role="alert" hidden>
+                </div>
+
                 <form id="formProduto" action="">
                     {% csrf_token %}
                     {{ form|crispy }}
@@ -72,7 +75,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div id="menssagem-alerta" class="alert alert-danger" role="alert" hidden>
+                </div>
+
                 <form id="updateForm" action="">
+
                     {% csrf_token %}
                     {{ form|crispy }}
 
@@ -194,9 +201,14 @@
                     criarFornecedorPreco(resposta.id)
                 },
                 error: function (error) {
-                    const respostaErrors = error.responseJSON
-                    console.log(error)
-                    console.log(respostaErrors)
+                    var linha = $('#menssagem-alerta');
+                    var errors = error.responseJSON
+                    if (errors.nome) {
+                        var input = $('form#formProduto #id_nome')
+                        input.addClass('is-invalid')
+                        linha.text(errors.nome)
+                        linha.attr("hidden", null)
+                    }
                 },
                 cache: false,
                 contentType: false,
@@ -223,6 +235,7 @@
                         success: function (resposta) {
                         },
                         error: function (error) {
+
                         },
                         cache: false,
                         contentType: false,
@@ -294,9 +307,14 @@
                         updateToTabel(resposta)
                     },
                     error: function (error) {
-                        const respostaErrors = error.responseJSON
-                        console.log(error)
-                        console.log(respostaErrors)
+                        var linha = $('#editModal #menssagem-alerta');
+                        var errors = error.responseJSON
+                        if (errors.nome) {
+                            var input = $('form#updateForm #id_nome')
+                            input.addClass('is-invalid')
+                            linha.text(errors.nome)
+                            linha.attr("hidden", null)
+                        }
                     },
                     cache: false,
                     contentType: false,

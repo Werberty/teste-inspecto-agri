@@ -40,6 +40,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div id="menssagem-alerta" class="alert alert-danger" role="alert" hidden>
+                </div>
+
                 <form id="formCategoria" action="">
                     {% csrf_token %}
                     {{ form|crispy }}
@@ -47,9 +50,7 @@
                     <button class="btn btn-primary form-control mt-2" type="submit">Cadastrar</button>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            </div>
+
         </div>
     </div>
 </div>
@@ -62,6 +63,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div id="menssagem-alerta" class="alert alert-danger" role="alert" hidden>
+                </div>
+
                 <form id="updateForm" action="">
                     {% csrf_token %}
                     {{ form|crispy }}
@@ -72,9 +76,7 @@
                     <button class="btn btn-primary form-control mt-2" type="submit">Salvar</button>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+
         </div>
     </div>
 </div>
@@ -163,9 +165,14 @@
                     appendToTable(resposta);
                 },
                 error: function (error) {
-                    const respostaErrors = error.responseJSON
-                    console.log(error)
-                    console.log(respostaErrors)
+                    var linha = $('#newModal #menssagem-alerta');
+                    var errors = error.responseJSON
+                    if (errors.nome) {
+                        var input = $('form#formCategoria #id_nome')
+                        input.addClass('is-invalid')
+                        linha.text(errors.nome)
+                        linha.attr("hidden", null)
+                    }
                 },
                 cache: false,
                 contentType: false,
@@ -231,9 +238,14 @@
                         updateToTabel(resposta)
                     },
                     error: function (error) {
-                        const respostaErrors = error.responseJSON
-                        console.log(error)
-                        console.log(respostaErrors)
+                        var linha = $('#editModal #menssagem-alerta');
+                        var errors = error.responseJSON
+                        if (errors.nome) {
+                            var input = $('form#updateForm #id_nome')
+                            input.addClass('is-invalid')
+                            linha.text(errors.nome)
+                            linha.attr("hidden", null)
+                        }
                     },
                     cache: false,
                     contentType: false,

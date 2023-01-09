@@ -43,6 +43,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div id="menssagem-alerta" class="alert alert-danger" role="alert" hidden>
+                </div>
+
                 <form id="formFornecedor" action="">
                     {% csrf_token %}
                     {{ form|crispy }}
@@ -73,7 +76,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div id="menssagem-alerta"></div>
+                <div id="menssagem-alerta" class="alert alert-danger" role="alert" hidden>
+                </div>
+
                 <form id="updateForm" action="">
                     {% csrf_token %}
                     {{ form|crispy }}
@@ -203,9 +208,14 @@
                     criaTelefone(resposta.id);
                 },
                 error: function (error) {
-                    const respostaErrors = error.responseJSON
-                    console.log(error)
-                    console.log(respostaErrors)
+                    var linha = $('#newModal #menssagem-alerta');
+                    var errors = error.responseJSON
+                    if (errors.cnpj) {
+                        var input = $('form#formFornecedor #id_cnpj')
+                        input.addClass('is-invalid')
+                        linha.text(errors.cnpj)
+                        linha.attr("hidden", null)
+                    }
                 },
                 cache: false,
                 contentType: false,
@@ -307,12 +317,14 @@
                         updateToTabel(resposta)
                     },
                     error: function (error) {
-                        // var linha = document.getElementById("menssagem-alerta");
-                        // var errors = error.responseJSON
-                        // console.log(errors);
-                        // linha.innerHTML += `<div class="alert alert-danger" role="alert">
-                        //                     ${errors.cnpj}
-                        //                     </div>`
+                        var linha = $('#editModal #menssagem-alerta');
+                        var errors = error.responseJSON
+                        if (errors.cnpj) {
+                            var input = $('form#updateForm #id_cnpj')
+                            input.addClass('is-invalid')
+                            linha.text(errors.cnpj)
+                            linha.attr("hidden", null)
+                        }
                     },
                     cache: false,
                     contentType: false,
