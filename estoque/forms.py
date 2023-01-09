@@ -1,5 +1,7 @@
 from django import forms
 
+from utils.django_forms import add_attr, add_placeholder
+
 from .models import Categoria, Fornecedor, FornecedorPreco, Produto, Telefone
 
 
@@ -39,6 +41,13 @@ class FornecedorPrecoForm(forms.ModelForm):
 
 
 class FornecedorForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        add_placeholder(self.fields['cnpj'], 'CNPJ válido')
+
+        add_attr(self.fields['cnpj'], 'class', 'mask-cnpj')
+
     class Meta:
         model = Fornecedor
         fields = [
@@ -53,6 +62,13 @@ class FornecedorForm(forms.ModelForm):
 
 
 class TelefoneForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        add_placeholder(self.fields['numero'], 'Telefone (com DDD)')
+
+        add_attr(self.fields['numero'], 'class', 'mask-phone')
+
     class Meta:
         model = Telefone
         fields = [
