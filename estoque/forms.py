@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Categoria, FornecedorPreco, Produto
+from .models import Categoria, Fornecedor, FornecedorPreco, Produto
 
 
 class CategoriaForm(forms.ModelForm):
@@ -28,4 +28,18 @@ class FornecedorPrecoForm(forms.ModelForm):
         fields = [
             'fornecedor',
             'preco_de_custo'
+        ]
+
+
+class FornecedorForm(forms.ModelForm):
+    class Meta:
+        model = Fornecedor
+        fields = [
+            'nome_fantasia',
+            'razao_social',
+            'cnpj',
+            'logradouro',
+            'numero',
+            'bairro',
+            'cidade',
         ]

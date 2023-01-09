@@ -42,9 +42,11 @@ class FornecedorSerializer(serializers.ModelSerializer):
         model = Fornecedor
         fields = [
             'id', 'nome_fantasia', 'razao_social', 'cnpj',
-            'telefones', 'telefones_objects',
+            'telefones', 'telefones_objects', 'produtos',  'produtos_objects',
             'logradouro', 'numero', 'bairro', 'cidade'
         ]
 
+    produtos_objects = serializers.StringRelatedField(
+        many=True, source='produtos', read_only=True)
     telefones_objects = serializers.StringRelatedField(
         many=True, read_only=True, source='telefones')

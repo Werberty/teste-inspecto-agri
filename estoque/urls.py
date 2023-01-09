@@ -35,4 +35,5 @@ urlpatterns = [
     # Site
     path('produtos/', views.produtos_view, name='produtos_view'),
     path('categorias/', views.categoria_view, name='categorias_view'),
+    path('fornecedores/', views.fornecedor_view, name='fornecedores_view'),
 ]

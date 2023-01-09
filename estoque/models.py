@@ -4,10 +4,10 @@ from .validators import valida_cnpj
 
 
 class Endereco(models.Model):
-    logradouro = models.CharField(max_length=165)
-    numero = models.CharField(max_length=65)
-    bairro = models.CharField(max_length=165)
-    cidade = models.CharField(max_length=165)
+    logradouro = models.CharField(max_length=165, blank=True, null=True)
+    numero = models.CharField(max_length=65, blank=True, null=True)
+    bairro = models.CharField(max_length=165, blank=True, null=True)
+    cidade = models.CharField(max_length=165, blank=True, null=True)
 
 
 class Fornecedor(Endereco):
@@ -53,8 +53,9 @@ class FornecedorPreco(models.Model):
     produto = models.ForeignKey(
         Produto, on_delete=models.CASCADE,
         related_name='preco_nos_fornecedores')
-    fornecedor = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
+    fornecedor = models.ForeignKey(
+        Fornecedor, on_delete=models.CASCADE, related_name='produtos')
     preco_de_custo = models.DecimalField(max_digits=12, decimal_places=2)
 
     def __str__(self) -> str:
-        return f'{self.fornecedor} - R$ {self.preco_de_custo}'
+        return f'{self.produto} - R$ {self.preco_de_custo}'
