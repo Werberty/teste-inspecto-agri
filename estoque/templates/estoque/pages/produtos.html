@@ -203,28 +203,32 @@
                 processData: false,
             })
             function criarFornecedorPreco(id) {
-                const form_fornecedor_preco = document.getElementById('formFornecedorPreco')
-                const fornecedor = document.getElementById('id_preco_nos_fornecedores-0-fornecedor')
-                const preco = document.getElementById('id_preco_nos_fornecedores-0-preco_de_custo')
-                const fd_fp = new FormData()
-                fd_fp.append('csrfmiddlewaretoken', csrf[0].value)
-                fd_fp.append('fornecedor', fornecedor.value)
-                fd_fp.append('preco_de_custo', preco.value)
-                fd_fp.append('produto', id)
+                var array = $('#formFornecedorPreco').children('.dynamic-form')
+                for (let i = 0; i < array.length; i++) {
+                    const form_fornecedor_preco = document.getElementById('formFornecedorPreco')
+                    const fornecedor = document.getElementById(`id_preco_nos_fornecedores-${i}-fornecedor`)
+                    const preco = document.getElementById(`id_preco_nos_fornecedores-${i}-preco_de_custo`)
 
-                $.ajax({
-                    type: 'POST',
-                    url: url_fp,
-                    data: fd_fp,
-                    async: true,
-                    success: function (resposta) {
-                    },
-                    error: function (error) {
-                    },
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                })
+                    const fd_fp = new FormData()
+                    fd_fp.append('csrfmiddlewaretoken', csrf[0].value)
+                    fd_fp.append('fornecedor', fornecedor.value)
+                    fd_fp.append('preco_de_custo', preco.value)
+                    fd_fp.append('produto', id)
+
+                    $.ajax({
+                        type: 'POST',
+                        url: url_fp,
+                        data: fd_fp,
+                        async: true,
+                        success: function (resposta) {
+                        },
+                        error: function (error) {
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                    })
+                }
             }
         })
     })();
