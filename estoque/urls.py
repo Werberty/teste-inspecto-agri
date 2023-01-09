@@ -33,6 +33,13 @@ fornecedor_preco_api_router.register(
     basename='fornecedor-preco-api'
 )
 
+telefones_api_router = SimpleRouter()
+telefones_api_router.register(
+    'telefones/api',
+    views.TelefoneAPIViewSet,
+    basename='telefones-api'
+)
+
 
 urlpatterns = [
     # API
@@ -40,6 +47,7 @@ urlpatterns = [
     path('', include(categoria_api_router.urls)),
     path('', include(fornecedores_api_router.urls)),
     path('', include(fornecedor_preco_api_router.urls)),
+    path('', include(telefones_api_router.urls)),
     # Site
     path('produtos/', views.produtos_view, name='produtos_view'),
     path('categorias/', views.categoria_view, name='categorias_view'),

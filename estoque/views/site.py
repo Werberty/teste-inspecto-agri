@@ -2,8 +2,8 @@ from django.forms.models import inlineformset_factory
 from django.shortcuts import render
 
 from estoque.forms import (CategoriaForm, FornecedorForm, FornecedorPrecoForm,
-                           ProdutoForm)
-from estoque.models import FornecedorPreco, Produto
+                           ProdutoForm, TelefoneForm)
+from estoque.models import Fornecedor, FornecedorPreco, Produto, Telefone
 
 
 def produtos_view(request):
@@ -28,7 +28,13 @@ def categoria_view(request):
 
 
 def fornecedor_view(request):
-    form = FornecedorForm()
-    return render(request, 'estoque/pages/fornecedores.html', context={
-        'form': form
-    })
+    if request.method == "GET":
+        form_telefone_facatory = inlineformset_factory(
+            Fornecedor, Telefone, form=TelefoneForm, extra=1
+        )
+        form_telefone = form_telefone_facatory()
+        form = FornecedorForm()
+        return render(request, 'estoque/pages/fornecedores.html', context={
+            'form': form,
+            'form_telefone': form_telefone
+        })

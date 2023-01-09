@@ -1,12 +1,13 @@
 from rest_framework.viewsets import ModelViewSet
 
-from ..models import Categoria, Fornecedor, FornecedorPreco, Produto
+from ..models import Categoria, Fornecedor, FornecedorPreco, Produto, Telefone
 from ..serializers import (CategoriaSerializer, FornecedorPrecoSerializer,
-                           FornecedorSerializer, ProdutoSerializer)
+                           FornecedorSerializer, ProdutoSerializer,
+                           TelefoneSerializer)
 
 
 class ProdutoAPIViewSet(ModelViewSet):
-    queryset = Produto.objects.all()
+    queryset = Produto.objects.all().select_related('categoria')
     serializer_class = ProdutoSerializer
 
 
@@ -23,3 +24,8 @@ class FornecedorAPIViewSet(ModelViewSet):
 class FornecedorPrecoAPIViewSet(ModelViewSet):
     queryset = FornecedorPreco.objects.all()
     serializer_class = FornecedorPrecoSerializer
+
+
+class TelefoneAPIViewSet(ModelViewSet):
+    queryset = Telefone.objects.all()
+    serializer_class = TelefoneSerializer

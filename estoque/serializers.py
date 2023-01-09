@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Categoria, Fornecedor, FornecedorPreco, Produto
+from .models import Categoria, Fornecedor, FornecedorPreco, Produto, Telefone
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -55,3 +55,14 @@ class FornecedorSerializer(serializers.ModelSerializer):
         many=True, source='produtos', read_only=True)
     telefones_objects = serializers.StringRelatedField(
         many=True, read_only=True, source='telefones')
+
+
+class TelefoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Telefone
+        fields = [
+            'numero', 'fornecedor', 'fornecedor_name'
+        ]
+
+    fornecedor_name = serializers.StringRelatedField(
+        source='fornecedor', read_only=True)

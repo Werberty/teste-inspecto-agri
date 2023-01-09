@@ -78,16 +78,6 @@
 
                     <input class="form-control" id="form-id" type="hidden" name="formId" />
 
-                    {% comment %} {{ form_fornecedor_preco.management_form }}
-
-                    <div id="formFornecedorPreco">
-                        {% for fp in form_fornecedor_preco %}
-                        <div id="inlineFormEdit">
-                            <hr>
-                            {{ fp|crispy }}
-                        </div>
-                        {% endfor %}
-                    </div> {% endcomment %}
 
                     <button class="btn btn-primary form-control mt-2" type="submit">Salvar</button>
                 </form>
@@ -105,9 +95,6 @@
         $('#inlineFormCreate').formset({
             prefix: '{{ form_fornecedor_preco.prefix }}'
         });
-        // $('#inlineFormEdit').formset({
-        //     prefix: '{{ form_fornecedor_preco.prefix }}'
-        // });
     })
 </script>
 
