@@ -15,8 +15,13 @@ class FornecedorPrecoSerializer(serializers.ModelSerializer):
     class Meta:
         model = FornecedorPreco
         fields = [
-            'id', 'produto', 'fornecedor', 'preco_de_custo',
+            'id', 'produto',
+            'fornecedor', 'fornecedor_name',
+            'preco_de_custo',
         ]
+
+    fornecedor_name = serializers.StringRelatedField(
+        source='fornecedor', read_only=True)
 
 
 class ProdutoSerializer(serializers.ModelSerializer):

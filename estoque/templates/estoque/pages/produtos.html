@@ -50,8 +50,10 @@
 
                     <div id="formFornecedorPreco">
                         {% for fp in form_fornecedor_preco %}
-                        <hr>
-                        {{ fp|crispy }}
+                        <div id="inlineFormCreate">
+                            <hr>
+                            {{ fp|crispy }}
+                        </div>
                         {% endfor %}
                     </div>
 
@@ -76,14 +78,16 @@
 
                     <input class="form-control" id="form-id" type="hidden" name="formId" />
 
-                    {{ form_fornecedor_preco.management_form }}
+                    {% comment %} {{ form_fornecedor_preco.management_form }}
 
                     <div id="formFornecedorPreco">
                         {% for fp in form_fornecedor_preco %}
-                        <hr>
-                        {{ fp|crispy }}
+                        <div id="inlineFormEdit">
+                            <hr>
+                            {{ fp|crispy }}
+                        </div>
                         {% endfor %}
-                    </div>
+                    </div> {% endcomment %}
 
                     <button class="btn btn-primary form-control mt-2" type="submit">Salvar</button>
                 </form>
@@ -95,6 +99,19 @@
 {% endblock content %}
 
 {% block script %}
+<!-- Inline Form -->
+<script type="text/javascript">
+    $(function () {
+        $('#inlineFormCreate').formset({
+            prefix: '{{ form_fornecedor_preco.prefix }}'
+        });
+        // $('#inlineFormEdit').formset({
+        //     prefix: '{{ form_fornecedor_preco.prefix }}'
+        // });
+    })
+</script>
+
+<!-- CRUD AJAX -->
 <script>
     function appendToTable(element) {
         // onClick="editUser(${element.id})" 
@@ -164,9 +181,7 @@
 
         const csrf = document.getElementsByName('csrfmiddlewaretoken')
 
-        const form_fornecedor_preco = document.getElementById('formFornecedorPreco')
-        const fornecedor = document.getElementById('id_preco_nos_fornecedores-0-fornecedor')
-        const preco = document.getElementById('id_preco_nos_fornecedores-0-preco_de_custo')
+
 
         const url = "{% url 'estoque:produtos-api-list' %}"
         const url_fp = "{% url 'estoque:fornecedor-preco-api-list' %}"
@@ -201,6 +216,9 @@
                 processData: false,
             })
             function criarFornecedorPreco(id) {
+                const form_fornecedor_preco = document.getElementById('formFornecedorPreco')
+                const fornecedor = document.getElementById('id_preco_nos_fornecedores-0-fornecedor')
+                const preco = document.getElementById('id_preco_nos_fornecedores-0-preco_de_custo')
                 const fd_fp = new FormData()
                 fd_fp.append('csrfmiddlewaretoken', csrf[0].value)
                 fd_fp.append('fornecedor', fornecedor.value)
@@ -213,12 +231,8 @@
                     data: fd_fp,
                     async: true,
                     success: function (resposta) {
-                        appendToTable(resposta);
                     },
                     error: function (error) {
-                        const respostaErrors = error.responseJSON
-                        console.log(error)
-                        console.log(respostaErrors)
                     },
                     cache: false,
                     contentType: false,

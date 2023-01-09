@@ -7,16 +7,17 @@ from estoque.models import FornecedorPreco, Produto
 
 
 def produtos_view(request):
-    form = ProdutoForm()
-    form_fornecedor_preco_factory = inlineformset_factory(
-        Produto, FornecedorPreco, form=FornecedorPrecoForm, extra=1
-    )
-    form_fornecedor_preco = form_fornecedor_preco_factory()
-    context = {
-        'form': form,
-        'form_fornecedor_preco': form_fornecedor_preco
-    }
-    return render(request, 'estoque/pages/produtos.html', context)
+    if request.method == 'GET':
+        form = ProdutoForm()
+        form_fornecedor_preco_factory = inlineformset_factory(
+            Produto, FornecedorPreco, form=FornecedorPrecoForm, extra=1
+        )
+        form_fornecedor_preco = form_fornecedor_preco_factory()
+        context = {
+            'form': form,
+            'form_fornecedor_preco': form_fornecedor_preco
+        }
+        return render(request, 'estoque/pages/produtos.html', context)
 
 
 def categoria_view(request):
@@ -31,17 +32,3 @@ def fornecedor_view(request):
     return render(request, 'estoque/pages/fornecedores.html', context={
         'form': form
     })
-
-
-def inserir(request):
-    if request.method == 'GET':
-        form = ProdutoForm()
-        form_fornecedor_preco_factory = inlineformset_factory(
-            Produto, FornecedorPreco, form=FornecedorPrecoForm, extra=1
-        )
-        form_fornecedor_preco = form_fornecedor_preco_factory()
-        context = {
-            'form': form,
-            'form_fornecedor_preco': form_fornecedor_preco
-        }
-        return render(request, 'estoque/pages/produtos.html', context)
