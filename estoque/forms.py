@@ -11,6 +11,9 @@ class CategoriaForm(forms.ModelForm):
         fields = [
             'nome'
         ]
+        labels = {
+            'nome': 'Nome'
+        }
 
 
 class ProdutoForm(forms.ModelForm):
@@ -22,6 +25,11 @@ class ProdutoForm(forms.ModelForm):
             'descricao',
             'categoria',
         ]
+        labels = {
+            'nome': 'Nome',
+            'descricao': 'Descrição',
+            'categoria': 'Categoria'
+        }
         widgets = {
             'descricao': forms.Textarea(
                 attrs={
@@ -38,6 +46,10 @@ class FornecedorPrecoForm(forms.ModelForm):
             'fornecedor',
             'preco_de_custo'
         ]
+        labels = {
+            'fornecedor': 'Fornecedor',
+            'preco_de_custo': 'Preço de Custo (R$)',
+        }
 
 
 class FornecedorForm(forms.ModelForm):
@@ -59,6 +71,15 @@ class FornecedorForm(forms.ModelForm):
             'bairro',
             'cidade',
         ]
+        labels = {
+            'nome_fantasia': 'Nome fastasia',
+            'razao_social': 'Razão social',
+            'cnpj': 'CNPJ',
+            'logradouro': 'Logradouro',
+            'numero': 'Número',
+            'bairro': 'Bairro',
+            'cidade': 'Cidade'
+        }
 
 
 class TelefoneForm(forms.ModelForm):
