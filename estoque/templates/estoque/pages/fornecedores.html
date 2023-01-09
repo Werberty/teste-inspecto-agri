@@ -212,25 +212,28 @@
                 processData: false,
             })
             function criaTelefone(id) {
-                const numero = document.getElementById('id_telefones-0-numero')
-                const fd_t = new FormData()
-                fd_t.append('csrfmiddlewaretoken', csrf[0].value)
-                fd_t.append('numero', numero.value)
-                fd_t.append('fornecedor', id)
+                var array = $('#formTelefone').children('.dynamic-form')
+                for (let i = 0; i < array.length; i++) {
+                    const numero = document.getElementById(`id_telefones-${i}-numero`)
+                    const fd_t = new FormData()
+                    fd_t.append('csrfmiddlewaretoken', csrf[0].value)
+                    fd_t.append('numero', numero.value)
+                    fd_t.append('fornecedor', id)
 
-                $.ajax({
-                    type: 'POST',
-                    url: url_tele,
-                    data: fd_t,
-                    async: true,
-                    success: function (resposta) {
-                    },
-                    error: function (error) {
-                    },
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                })
+                    $.ajax({
+                        type: 'POST',
+                        url: url_tele,
+                        data: fd_t,
+                        async: true,
+                        success: function (resposta) {
+                        },
+                        error: function (error) {
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                    })
+                }
             }
         })
     })();
