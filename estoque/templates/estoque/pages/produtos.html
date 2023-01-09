@@ -55,11 +55,8 @@
                         {% endfor %}
                     </div>
 
-                    <button class="btn btn-primary form-control mt-2" type="submit">SUBMIT</button>
+                    <button class="btn btn-primary form-control mt-2" type="submit">Cadastrar</button>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
@@ -90,9 +87,6 @@
 
                     <button class="btn btn-primary form-control mt-2" type="submit">Salvar</button>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -171,8 +165,11 @@
         const csrf = document.getElementsByName('csrfmiddlewaretoken')
 
         const form_fornecedor_preco = document.getElementById('formFornecedorPreco')
+        const fornecedor = document.getElementById('id_preco_nos_fornecedores-0-fornecedor')
+        const preco = document.getElementById('id_preco_nos_fornecedores-0-preco_de_custo')
 
         const url = "{% url 'estoque:produtos-api-list' %}"
+        const url_fp = "{% url 'estoque:fornecedor-preco-api-list' %}"
 
         form.addEventListener('submit', e => {
             e.preventDefault()
@@ -183,6 +180,8 @@
             fd.append('descricao', descricao.value)
             fd.append('categoria', categoria.value)
 
+
+
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -190,6 +189,7 @@
                 async: true,
                 success: function (resposta) {
                     appendToTable(resposta);
+                    criarFornecedorPreco(resposta.id)
                 },
                 error: function (error) {
                     const respostaErrors = error.responseJSON
@@ -200,6 +200,31 @@
                 contentType: false,
                 processData: false,
             })
+            function criarFornecedorPreco(id) {
+                const fd_fp = new FormData()
+                fd_fp.append('csrfmiddlewaretoken', csrf[0].value)
+                fd_fp.append('fornecedor', fornecedor.value)
+                fd_fp.append('preco_de_custo', preco.value)
+                fd_fp.append('produto', id)
+
+                $.ajax({
+                    type: 'POST',
+                    url: url_fp,
+                    data: fd_fp,
+                    async: true,
+                    success: function (resposta) {
+                        appendToTable(resposta);
+                    },
+                    error: function (error) {
+                        const respostaErrors = error.responseJSON
+                        console.log(error)
+                        console.log(respostaErrors)
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                })
+            }
         })
     })();
 

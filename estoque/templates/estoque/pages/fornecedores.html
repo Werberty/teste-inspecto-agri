@@ -65,6 +65,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div id="menssagem-alerta"></div>
                 <form id="updateForm" action="">
                     {% csrf_token %}
                     {{ form|crispy }}
@@ -198,7 +199,7 @@
 
 
 
-    // Deletar Produto
+    // Deletar Fornecedores
     function deleteUser(id) {
         const url = '{% url "estoque:fornecedores-api-detail" 0 %}'.replace('0', id);
 
@@ -226,7 +227,7 @@
     }
 
 
-    // Editando produto
+    // Editando fornecedor
     (function editaProduto() {
         const form_edit = document.getElementById('updateForm')
 
@@ -265,9 +266,12 @@
                         updateToTabel(resposta)
                     },
                     error: function (error) {
-                        const respostaErrors = error.responseJSON
-                        console.log(error)
-                        console.log(respostaErrors)
+                        // var linha = document.getElementById("menssagem-alerta");
+                        // var errors = error.responseJSON
+                        // console.log(errors);
+                        // linha.innerHTML += `<div class="alert alert-danger" role="alert">
+                        //                     ${errors.cnpj}
+                        //                     </div>`
                     },
                     cache: false,
                     contentType: false,
@@ -282,18 +286,16 @@
     function updateToTabel(resposta) {
         $("#userTable #fornecedor-" + resposta.id).children(".userData").each(function () {
             var attr = $(this).attr("name");
-            
             if (attr == "nome_fantasia") {
                 $(this).text(resposta.nome_fantasia);
             } else if (attr == "razao_social") {
                 $(this).text(resposta.razao_social);
             } else if (attr == "cnpj") {
                 $(this).text(resposta.cnpj);
-            } 
+            }
         });
-        $(`#userTable #fornecedor-${resposta.id}-td`).children(".userData").each(function (){
+        $(`#userTable #fornecedor-${resposta.id}-td`).children(".userData").each(function () {
             var attr = $(this).attr("name");
-            console.log(this)
             if (attr == "logradouro") {
                 $(this).text(resposta.logradouro);
             } else if (attr == "bairro") {

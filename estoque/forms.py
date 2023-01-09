@@ -20,6 +20,13 @@ class ProdutoForm(forms.ModelForm):
             'descricao',
             'categoria',
         ]
+        widgets = {
+            'descricao': forms.Textarea(
+                attrs={
+                    'rows': '2'
+                }
+            )
+        }
 
 
 class FornecedorPrecoForm(forms.ModelForm):
