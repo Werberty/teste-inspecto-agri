@@ -13,7 +13,8 @@ class Endereco(models.Model):
 class Fornecedor(Endereco):
     nome_fantasia = models.CharField(max_length=165)
     razao_social = models.CharField(max_length=165)
-    cnpj = models.CharField(max_length=18, validators=[valida_cnpj,])
+    cnpj = models.CharField(max_length=18, validators=[
+                            valida_cnpj,], unique=True)
 
     def __str__(self):
         return self.nome_fantasia
